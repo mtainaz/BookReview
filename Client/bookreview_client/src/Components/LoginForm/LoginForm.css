@@ -1,8 +1,20 @@
+.login-wrapper {
+    width: 100vw;
+    height: 100vh;
+    background: url('../Assets/library.jpg');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .wrapper {
     width: 420px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, .2);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(60px);
     box-shadow:  0 0 10px rgba(0, 0, 255, .2);
     color: #fff;
     border-radius: 10px;
@@ -56,6 +68,8 @@ h1 {
     font-size: 16px;
     color: #333;
     font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, .2);
+    display: inline-block;
 }
 
 .wrapper .register-link {
@@ -71,5 +85,9 @@ h1 {
 }
 
 .register-link p a:hover {
+    text-decoration: underline;
+}
+
+.wrapper button:hover {
     text-decoration: underline;
 }

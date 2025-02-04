@@ -1,0 +1,11 @@
+.registration-wrapper {
+    width: 100vw;
+    height: 100vh;
+    background: url('../Assets/bookshelf.jpg');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
