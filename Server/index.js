@@ -13,7 +13,15 @@ const port = 3010;
 const saltRounds = 10;
 env.config();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", 
+    credentials: true, // Allow cookies and session authentication
+  })
+);
+// app.use(
+//   cors()
+// );
 app.use(express.json());
 app.use(
   session({
@@ -28,9 +36,7 @@ app.use(
     }
   })
 );
-
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -43,24 +49,32 @@ const pool = new pg.Pool({
   port: process.env.PG_PORT,
 });
 
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user) => {
+    if (err) return res.status(500).json({ message: "Internal server error" });
+    if (!user) return res.status(401).json({ message: "Invalid email/password" });
 
-// app.get("/logout", (req, res) => {
-//   req.logout(function (err) {
-//     if (err) {
-//       return next(err);
-//     }
-//     res.redirect("/");
-//   });
-// });
+    req.login(user, (err) => {
+      if (err) return res.status(500).json({ message: "Error logging in" });
+      return res.json({ message: "Login successful", user });
+    });
+  })(req, res, next);
+});
 
+app.get("/check-session", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.json({ user: req.user });
+  } else {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+});
 
-app.post(
-  "/",
-  passport.authenticate("local", {
-    successRedirect: "/welcome",
-    failureRedirect: "/",
-  })
-);
+app.post("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) return res.status(500).json({ message: "Error logging out" });
+    return res.json({ message: "Logout successful" });
+  });
+});
 
 app.post("/register", async (req, res) => {
   const email = req.body.email;
@@ -116,10 +130,11 @@ passport.use(
       }
     } catch (err) {
       console.log(err);
-      return cb(err);
+      return cb("An error Occurred");
     }
   })
 );
+
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
