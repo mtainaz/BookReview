@@ -1,9 +1,15 @@
 import React, {useState} from 'react';
 import './RegistrationForm.css'
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser, FaLock, FaGoogle } from "react-icons/fa";
+import { useAuth } from "../Authentication/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [message, setMessage] = useState();
+    const [formData, setFormData] = useState({ username: "", password: "" });
+    const { register } = useAuth();
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -12,21 +18,19 @@ const RegistrationForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-          const response = await fetch("http://localhost:3010/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-    
-          if (!response.ok) throw new Error("Failed to submit form");
-    
-          const result = await response.json();
-          console.log("Form submitted:", result);
-        } catch (error) {
-          console.error("Error submitting form:", error);
+        const response=await register(formData);
+        if (response.ok) {
+          navigate("/welcome");
+        } else if (response.status===400) {
+          setMessage("User exists")
+        } else {
+          setMessage("Server error");
         }
-      };
+    };
+
+    const handleOauth = async () => {
+      window.location.href = "http://localhost:3010/auth/google"; 
+    };
 
     return (
         <div className='registration-wrapper'>
@@ -34,15 +38,36 @@ const RegistrationForm = () => {
                 <form onSubmit={handleSubmit}>
                     <h1>Welcome to BookNest</h1>
                     <div className="input-box">
-                        <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required/>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Email" required/>
                         <FaUser className='icon'/>
                     </div>
                     <div className="input-box">
                         <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required/>
                         <FaLock className='icon'/>
                     </div>
+                    {message && (
+                      <p className='error-message'>
+                        {message === "User exists" ? (
+                          <>
+                            This email is already registered. Please <a href="/login">log in</a> or use a different email.
+                          </>
+                        ) : (
+                          "Internal server error, please try again."
+                        )}
+                      </p>
+                    )}
                     <button type="submit">Register</button>
                 </form>
+
+                <div class="divider">
+                  <span>OR</span>
+                </div>
+
+                <button className='google-btn' onClick={handleOauth}>
+                  <FaGoogle className='google-icon' />
+                  Sign up with Google
+                </button>
+
             </div>
         </div>
     )

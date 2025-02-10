@@ -11,9 +11,24 @@ function App() {
     <AuthProvider>
       <Router>
           <Routes>
-            <Route path="/" element={<LoginForm />} />
-            <Route path="/register" element={<RegistrationForm />} />
             {/* Protected Route: Welcome Page (only accessible when logged in) */}
+            {/* Default Route (Redirect to login page) */}
+            <Route             
+              path="*"
+              element={
+                <PrivateRoute>
+                  <LoginForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PrivateRoute>
+                  <RegistrationForm />
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/welcome"
               element={
@@ -22,9 +37,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* Default Route (Redirect to login page) */}
-            <Route path="*" element={<LoginForm />} />
           </Routes>
       </Router>
     </AuthProvider>

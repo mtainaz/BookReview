@@ -9,3 +9,18 @@
     justify-content: center;
     align-items: center;
 }
+  
+.wrapper .error-message{
+    text-align: center;
+    color: #FFCDD2;
+    padding-bottom: 25px;
+}
+
+.wrapper p a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.wrapper p a:hover{
+    text-decoration: underline;
+}

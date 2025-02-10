@@ -13,11 +13,26 @@ export const AuthProvider = ({ children }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.user) setUser(data.user);
+        if (data.user) {setUser(data.user)};
       })
       .catch(() => setUser(null))
-      .finally(() => setLoading(false));;
+      .finally(() => setLoading(false));
   }, []);
+
+  const register = async (credentials) => {
+    const response = await fetch("http://localhost:3010/register", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUser(data.user);
+    } 
+    return response;
+  };
 
   const login = async (credentials) => {
     const res = await fetch("http://localhost:3010/login", {
@@ -27,10 +42,11 @@ export const AuthProvider = ({ children }) => {
       body: JSON.stringify(credentials),
     });
 
-    const data = await res.json();
-    if (res.ok && data.user) {
-        setUser(data.user);
+    if (res.ok) {
+      const data = await res.json();
+      setUser(data.user);
     } 
+    return res;
   };
 
   const logout = async () => {
@@ -42,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
       {children}
     </AuthContext.Provider>
   );

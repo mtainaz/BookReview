@@ -4,6 +4,7 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-local";
+import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
 import cors from "cors";
 import env from "dotenv";
@@ -49,6 +50,21 @@ const pool = new pg.Pool({
   port: process.env.PG_PORT,
 });
 
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+
+app.get(
+  "/auth/google/welcome",
+  passport.authenticate("google", {
+    successRedirect: "http://localhost:3000/welcome",
+    failureRedirect: "http://localhost:3000",
+  })
+);
+
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) return res.status(500).json({ message: "Internal server error" });
@@ -77,7 +93,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const email = req.body.email;
+  const email = req.body.username;
   const password = req.body.password;
   try {
     const checkResult = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -89,12 +105,16 @@ app.post("/register", async (req, res) => {
     } 
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2)",
+    const result = await pool.query(
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
       [email, hashedPassword]
     );
+    const user = result.rows[0];
+    req.login(user, (err) => {  // Log the new user in
+      if (err) return res.status(500).json({ message: "Error logging in" });
+      return res.json({ message: "Login successful", user });
+    });
 
-    return res.json({ success: true, message: "User registered successfully!" });
   } catch (err) {
     console.error("Error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -133,6 +153,37 @@ passport.use(
       return cb("An error Occurred");
     }
   })
+);
+
+passport.use(
+  "google",
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:3010/auth/google/welcome",
+      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      try {
+        // console.log(profile);
+        const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+          profile.email,
+        ]);
+        if (result.rows.length === 0) {
+          const newUser = await pool.query(
+            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+            [profile.email, "*****"]
+          );
+          return cb(null, newUser.rows[0]); // Register
+        } else {
+          return cb(null, result.rows[0]); // Login
+        }
+      } catch (err) {
+        return cb(err);
+      }
+    }
+  )
 );
 
 

@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import { useAuth } from "../Authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
 import './LoginForm.css';
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser, FaLock, FaGoogle } from "react-icons/fa";
 
 const LoginForm = () => {
+    const [message, setMessage] = useState();
     const { login } = useAuth();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
@@ -16,8 +17,18 @@ const LoginForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login(formData);
-        navigate("/welcome");
+        const response=await login(formData);
+        if (response.ok) {
+            navigate("/welcome");
+          } else if (response.status===401) {
+            setMessage("Wrong info")
+          } else {
+            setMessage("Server error");
+        }
+    };
+
+    const handleOauth = async () => {
+      window.location.href = "http://localhost:3010/auth/google"; 
     };
 
     return (
@@ -34,11 +45,31 @@ const LoginForm = () => {
                         <FaLock className='icon'/>
                     </div>
 
+                    {message && (
+                      <p className='login-error'>
+                        {message === "Wrong info" ? (
+                          "Invalid email or password. Please try again."
+                        ) : (
+                          "Internal server error, please try again."
+                        )}
+                      </p>
+                    )}
+
                     <button type="submit">Login</button>
-                    <div className="register-link">
-                        <p>Don't have an account? <a href="/register">Register</a></p>
-                    </div>
                 </form>
+
+                <div className="divider">
+                  <span>OR</span>
+                </div>
+
+                <button className='google-btn' onClick={handleOauth}>
+                  <FaGoogle className='google-icon' />
+                  Sign in with Google
+                </button>
+                
+                <div className="register-link">
+                  <p>Don't have an account? <a href="/register">Register</a></p>
+                </div>
             </div>
         </div>
     )
