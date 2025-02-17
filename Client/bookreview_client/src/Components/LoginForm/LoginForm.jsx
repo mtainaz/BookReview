@@ -5,7 +5,7 @@ import './LoginForm.css';
 import { FaUser, FaLock, FaGoogle } from "react-icons/fa";
 
 const LoginForm = () => {
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
@@ -27,7 +27,7 @@ const LoginForm = () => {
         }
     };
 
-    const handleOauth = async () => {
+    const handleOauth = () => {
       window.location.href = "http://localhost:3010/auth/google"; 
     };
 

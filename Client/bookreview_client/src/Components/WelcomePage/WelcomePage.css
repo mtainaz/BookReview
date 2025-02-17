@@ -1,0 +1,14 @@
+.wp-content{
+    min-height: 80vh;
+    background: linear-gradient(rgba(93, 64, 55, 0.3), rgba(62, 39, 35, 0.5)), url("../Assets/library2.jpg") center/cover no-repeat;
+    flex-direction: column;
+}
+.wp-title{
+    font-size: 4.2rem;
+}
+.wp-text{
+    margin-top: -1.8rem;
+    margin-bottom: 2.8rem;
+    opacity: 0.8;
+    max-width: 770px;
+}

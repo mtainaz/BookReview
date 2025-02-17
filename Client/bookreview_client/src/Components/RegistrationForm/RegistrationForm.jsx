@@ -5,7 +5,7 @@ import { useAuth } from "../Authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState("");
     const [formData, setFormData] = useState({ username: "", password: "" });
     const { register } = useAuth();
 
@@ -28,7 +28,7 @@ const RegistrationForm = () => {
         }
     };
 
-    const handleOauth = async () => {
+    const handleOauth = () => {
       window.location.href = "http://localhost:3010/auth/google"; 
     };
 
