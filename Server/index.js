@@ -6,6 +6,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
+import { spawn } from "child_process";
 import cors from "cors";
 import env from "dotenv";
 
@@ -119,6 +120,87 @@ app.post("/register", async (req, res) => {
     console.error("Error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+app.post("/run-python", async (req, res) => {
+    const query = req.body.query; // Get query from frontend
+    const category = req.body.category;
+    const tone = req.body.tone;
+
+    const pythonProcess = spawn("python", ["../colLearning/script.py", query]);
+
+    let result = "";
+    pythonProcess.stdout.on("data", (data) => {
+        result += data.toString();
+    });
+
+    pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error: ${data}`);
+        res.status(500).json({ error: data.toString() });
+    });
+
+    pythonProcess.on("close", async () => {
+        try {
+            const client = await pool.connect();
+            const rec_ids = JSON.parse(result)
+            console.log(Object.keys(rec_ids))
+            try {
+                await client.query('BEGIN');
+            
+                // Create a temporary table for recommended books
+                await client.query(`
+                    CREATE TEMP TABLE rec_books AS
+                    SELECT * FROM books
+                    WHERE isbn13 = ANY($1);
+                `, [Object.keys(rec_ids)]);
+
+                // Filter based on category
+                if (category != "All") {
+                    await client.query(`
+                        DELETE FROM rec_books
+                        WHERE simple_categories <> $1;
+                    `, [category]);
+                }
+
+                let recommendedResult;
+                const tones_dict = {
+                    "Happy": "joy",
+                    "Surprising": "surprise",
+                    "Angry": "anger",
+                    "Suspenseful": "fear",
+                    "Sad": "sadness"
+                };
+                
+                if (tone!="All") {
+                    recommendedResult = await client.query(`
+                        SELECT * FROM rec_books ORDER BY ${tones_dict[tone]} DESC;
+                    `);
+                }  else {
+                    recommendedResult = await client.query(`
+                      SELECT * FROM rec_books;
+                  `);
+                }
+            
+                await client.query('COMMIT');
+                const sortedBooks=recommendedResult.rows.map((book)=>({
+                  isbn: book.isbn13,
+                  score: rec_ids[book.isbn13]
+                })).sort((a,b)=>b.score-a.score).slice(0, 20) // Sort in descending order and take the first 20 elements
+
+                res.json(sortedBooks);
+            } catch (err) {
+                await client.query('ROLLBACK');
+                console.error(err);
+                res.status(500).json({ error: err.message });
+            } finally {
+                client.release(); // Ensure the client is always released back to the pool
+            }
+    
+        } catch (error) {
+            console.error("Error parsing JSON:", error);
+            return res.status(500).json({ message: "Error parsing JSON" });
+        }
+    });
 });
 
 passport.use(

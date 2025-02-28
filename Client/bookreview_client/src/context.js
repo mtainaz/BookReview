@@ -5,7 +5,7 @@ const AppContext = React.createContext();
 
 const AppProvider = ({children}) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [books, setBooks] = useState([]);
+    const [books, setBooks] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [resultTitle, setResultTitle] = useState("");
 
