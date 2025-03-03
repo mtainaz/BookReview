@@ -143,7 +143,7 @@ app.post("/run-python", async (req, res) => {
         try {
             const client = await pool.connect();
             const rec_ids = JSON.parse(result)
-            console.log(Object.keys(rec_ids))
+            // console.log(Object.keys(rec_ids))
             try {
                 await client.query('BEGIN');
             

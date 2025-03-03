@@ -34,7 +34,7 @@ const Navbar = () => {
               <Link to = "#" className='nav-link text-uppercase text-white fs-22 fw-6 ls-1'>My Reviews</Link>
             </li>
             <li className='nav-item'>
-              <Link to = "#" className='nav-link text-uppercase text-white fs-22 fw-6 ls-1'>Recommendations</Link>
+              <Link to = "/recs" className='nav-link text-uppercase text-white fs-22 fw-6 ls-1'>Recommendations</Link>
             </li>
             <li className='nav-item'>
               <Link to = "#" className='nav-link text-uppercase text-white fs-22 fw-6 ls-1' onClick={logout}>Logout</Link>

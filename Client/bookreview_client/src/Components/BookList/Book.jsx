@@ -16,7 +16,7 @@ const Book = (book) => {
         
 
         <div className='book-item-info-item author fs-15'>
-          <span className='text-capitalize fw-7'>Author: </span>
+          <span className='fw-7'>Author(s): </span>
           {book.author?<span>{book.author.join(', ')}</span>:null}
         </div>
 

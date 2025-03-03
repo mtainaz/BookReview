@@ -8,6 +8,7 @@ import BookList from './Components/BookList/BookList';
 import BookDetails from './Components/BookDetails/BookDetails';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import WelcomePage from './Components/WelcomePage/WelcomePage';
+import RecPage from './Components/RecPage/RecPage';
 
 function App() {
   return (
@@ -33,14 +34,22 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path="/welcome"
+              <Route 
+                path="/welcome"
                 element={
                   <PrivateRoute>
                     <WelcomePage />
                   </PrivateRoute>
                 }
-              > 
-              </Route>
+              /> 
+
+             <Route path="/recs"
+                element={
+                  <PrivateRoute>
+                    <RecPage />
+                  </PrivateRoute>
+                }
+              /> 
               <Route path = "book" element = {<BookList />} />
               <Route path = "/book/:id" element = {<BookDetails />} />
             </Routes>
