@@ -6,10 +6,12 @@ import "./BookDetails.css";
 import {FaArrowLeft} from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import NavBar from "../NavBar/NavBar";
+import { useGlobalContext } from '../../context';
 
-const URL = "https://openlibrary.org/works/";
+const URL = "https://openlibrary.org";
 
 const BookDetails = () => {
+  const {isbnSearch} = useGlobalContext();
   const {id} = useParams();
   const [loading, setLoading] = useState(false);
   const [book, setBook] = useState(null);
@@ -19,7 +21,7 @@ const BookDetails = () => {
     setLoading(true);
     async function getBookDetails(){
       try{
-        const response = await fetch(`${URL}${id}.json`);
+        const response = isbnSearch? await fetch(`${URL}/books/${id}.json`):await fetch(`${URL}/works/${id}.json`);
         const data = await response.json();
         console.log(data);
 
@@ -44,7 +46,7 @@ const BookDetails = () => {
       }
     }
     getBookDetails();
-  }, [id]);
+  }, [id, isbnSearch]);
 
   if(loading) return <Loading />;
 

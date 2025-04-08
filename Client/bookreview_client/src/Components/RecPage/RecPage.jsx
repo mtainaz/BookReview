@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
 import './RecPage.css';
 import NavBar from "../NavBar/NavBar";
+import { useNavigate } from 'react-router-dom';
+import { useGlobalContext } from '../../context';
+import Loading from "../Loader/Loader";
 
 const RecPage = () => {
     const [formData, setFormData] = useState({ query: "", category: "All", tone: "All"});
+    const {setResultTitle, setIsbnSearch, setIsbnList, loading} = useGlobalContext();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -12,6 +17,8 @@ const RecPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsbnSearch(true);
+
         const response = await fetch("http://localhost:3010/run-python", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -20,12 +27,17 @@ const RecPage = () => {
         
         if (response.ok) {
             const data = await response.json();
-            const isbn_list=data.map((book)=> book.isbn)
-            console.log(isbn_list) 
+            setIsbnList(data.map((book)=> book.isbn))
+            setResultTitle(`Here's what we found for "${formData.query}"`);
+            // const isbn_list=data.map((book)=> book.isbn)
+            // console.log(isbn_list) 
+            navigate("/book");
         } else {
             console.error("Request failed with status:", response.status);
         }
     };
+
+    if(loading) return <Loading />;
 
     return (
         <main>

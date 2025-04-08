@@ -5,13 +5,15 @@ import { useGlobalContext } from '../../context';
 import "./SearchForm.css";
 
 const SearchForm = () => {
-  const {setSearchTerm, setResultTitle} = useGlobalContext();
+  const {setSearchTerm, setResultTitle, setIsbnSearch} = useGlobalContext();
   const searchText = useRef('');
   const navigate = useNavigate();
 
   useEffect(() => searchText.current.focus(), []);
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsbnSearch(false);
+    
     let tempSearchTerm = searchText.current.value.trim();
     if((tempSearchTerm.replace(/[^\w\s]/gi,"")).length === 0){ //If only invalid characters provided
       setResultTitle(`Sorry, no results were found for "${searchText.current.value}". Try another search!`);
