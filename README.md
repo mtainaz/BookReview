@@ -1,7 +1,7 @@
 # Book Review Website with OAuth Authentication & Semantic Book Recommender
 
 ## Overview
-This is an ongoing project for a Book Review Website where users can search, view, rate, and review books. The website also features a semantic book recommender. Users can log in or sign up securely via third-party authentication providers (e.g., Google) using OAuth and manage their sessions through cookies.
+This is a Book Review Website where users can search, view, rate, and review books. The website also features a semantic book recommender which recommends books based on user preferences. Users can log in or sign up securely via third-party authentication providers (e.g., Google) using OAuth and manage their sessions through cookies.
 
 ## Technologies
 * **Frontend:** React
