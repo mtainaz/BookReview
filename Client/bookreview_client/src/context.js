@@ -34,7 +34,9 @@ const AppProvider = ({children}) => {
                     });
                     
                     setBooks(newBooks);
-                    console.log(newBooks)
+                } else {
+                    setBooks([]);
+                    setResultTitle(`Sorry, no results were found for "${searchTerm}". Try another search!`);
                 }
             } else {
                 if (searchTerm) {
@@ -57,7 +59,6 @@ const AppProvider = ({children}) => {
                         });
         
                         setBooks(newBooks);
-                        // console.log(newBooks)
         
                         if(newBooks.length > 0){
                             setResultTitle(`Here's what we found for "${searchTerm}"`);

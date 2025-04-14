@@ -7,8 +7,9 @@ import Loading from "../Loader/Loader";
 
 const RecPage = () => {
     const [formData, setFormData] = useState({ query: "", category: "All", tone: "All"});
-    const {setResultTitle, setIsbnSearch, setIsbnList, loading} = useGlobalContext();
+    const {setResultTitle, setIsbnSearch, setIsbnList} = useGlobalContext();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -17,6 +18,7 @@ const RecPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         setIsbnSearch(true);
 
         const response = await fetch("http://localhost:3010/run-python", {
@@ -29,11 +31,11 @@ const RecPage = () => {
             const data = await response.json();
             setIsbnList(data.map((book)=> book.isbn))
             setResultTitle(`Here's what we found for "${formData.query}"`);
-            // const isbn_list=data.map((book)=> book.isbn)
-            // console.log(isbn_list) 
+            setLoading(false);
             navigate("/book");
         } else {
             console.error("Request failed with status:", response.status);
+            setLoading(false);
         }
     };
 

@@ -1,0 +1,47 @@
+form {
+    background-color: #f6e6d3; 
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin: 2rem auto;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #4b2e2e; 
+}
+  
+form input[type="text"],
+form select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #d2b48c;
+  background-color: #fffaf3;
+  font-size: 1rem;
+}
+  
+form input[type="text"]::placeholder {
+  color: #a58b6f;
+}
+  
+button[type="submit"] {
+  background-color: #6b3f2e; 
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+  
+button[type="submit"]:hover {
+  background-color: #582e21;
+}
+  

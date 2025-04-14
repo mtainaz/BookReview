@@ -29,7 +29,7 @@ const BookList = () => {
       <NavBar />
       <section className='booklist'>
         <div className='container'>
-          <button type='button' className='flex flex-c back-btn' onClick={() => navigate("/welcome")}>
+          <button type='button' className='flex flex-c back-btn' onClick={() => isbnSearch? navigate("/recs") : navigate("/welcome")}>
             <FaArrowLeft size = {22} />
             <span className='fs-18 fw-6'>Go Back</span>
           </button>
