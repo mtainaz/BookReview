@@ -23,9 +23,21 @@ This is an ongoing project for a Book Review Website where users can search, vie
 
    ```bash
    cd Server
-* To install all packages type npm i
-* do node index.js
+2. Install all dependencies:
+
+   ```bash
+   npm install
+3. Start the backend server:
+
+   ```bash
+   node index.js
 
 ## Run Frontend
-* cd into Client/bookreview
-* do npm start
+1. Navigate to the frontend directory:
+
+   ```bash
+   cd Client/bookreview
+2. Start the development server:
+
+   ```bash
+   npm start
