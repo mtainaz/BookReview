@@ -44,8 +44,8 @@ const RecPage = () => {
     return (
         <main>
         <NavBar />
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="rec-form-wrapper">
+            <form onSubmit={handleSubmit} className="rec-form">
                 <div className="query-box">
                     <label for="query">Please enter a description of a book:</label>
                     <input type="text" name="query" id="query" value={formData.query} onChange={handleChange} placeholder="e.g. A book that spooks you" required/>
@@ -73,8 +73,9 @@ const RecPage = () => {
                         <option value="Sad">Sad</option>
                     </select>
                 </div>
-
-                <button type="submit">Get Recommendations</button>
+                <div className="button-wrapper">
+                    <button type="submit">Get Recommendations</button>
+                </div>
             </form>
         </div>
         </main>
